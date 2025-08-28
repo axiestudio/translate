@@ -11,7 +11,7 @@ from axiestudio.graph import Graph
 
 
 def ingestion_graph():
-    # Inmatningsgraf
+    # Ingestion Graph
     file_component = FileComponent()
     text_splitter = SplitTextComponent()
     text_splitter.set(data_inputs=file_component.load_files_message)
@@ -26,7 +26,7 @@ def ingestion_graph():
 
 
 def rag_graph():
-    # RAG-graf
+    # RAG Graph
     openai_embeddings = OpenAIEmbeddingsComponent()
     chat_input = ChatInput()
     rag_vector_store = AstraDBVectorStoreComponent()
@@ -39,11 +39,11 @@ def rag_graph():
     parse_data.set(input_data=rag_vector_store.search_documents)
     prompt_component = PromptComponent()
     prompt_component.set(
-        template=dedent("""Givet följande sammanhang, svara på frågan.
-                         Sammanhang:{context}
+        template=dedent("""Given the following context, answer the question.
+                         Context:{context}
 
-                         Fråga: {question}
-                         Svar:"""),
+                         Question: {question}
+                         Answer:"""),
         context=parse_data.parse_combined_text,
         question=chat_input.message_response,
     )

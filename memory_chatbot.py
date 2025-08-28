@@ -10,7 +10,7 @@ def memory_chatbot_graph(template: str | None = None):
     if template is None:
         template = """{context}
 
-    Användare: {user_message}
+    User: {user_message}
     AI: """
     memory_component = MemoryComponent()
     chat_input = ChatInput()

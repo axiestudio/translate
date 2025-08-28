@@ -6,11 +6,11 @@ from axiestudio.graph import Graph
 
 def basic_prompting_graph(template: str | None = None):
     if template is None:
-        template = """Svara användaren som om du vore en pirat.
+        template = """Answer the user as if you were a pirate.
 
-Användare: {user_input}
+User: {user_input}
 
-Svar:
+Answer:
 """
     chat_input = ChatInput()
     prompt_component = PromptComponent()

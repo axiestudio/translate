@@ -17,40 +17,40 @@ def hierarchical_tasks_agent_graph():
     researcher_agent.set(
         tools=[search_api_tool.build_tool],
         llm=llm.build_model,
-        role="Forskare",
-        goal="Sök efter information om användarens fråga och svara så bra du kan",
-        backstory="Du är en pålitlig forskare och journalist ",
+        role="Researcher",
+        goal="Search for information about the User's query and answer as best as you can",
+        backstory="You are a reliable researcher and journalist ",
     )
 
     editor_agent = CrewAIAgentComponent()
 
     editor_agent.set(
         llm=llm.build_model,
-        role="Redaktör",
-        goal="Utvärdera informationen för vilseledande eller partisk data.",
-        backstory="Du är en pålitlig forskare och journalist ",
+        role="Editor",
+        goal="Evaluate the information for misleading or biased data.",
+        backstory="You are a reliable researcher and journalist ",
     )
 
     response_prompt = PromptComponent()
     response_prompt.set(
-        template="""Användarens fråga:
+        template="""User's query:
 {query}
 
-Svara användaren med så mycket information som du kan om ämnet. Ta bort om det behövs.
-Om det bara är en allmän fråga (t.ex. en hälsning) kan du svara dem direkt.""",
+Respond to the user with as much as information as you can about the topic. Delete if needed.
+If it is just a general query (e.g a greeting) you can respond them directly.""",
         query=chat_input.message_response,
     )
     manager_agent = CrewAIAgentComponent()
     manager_agent.set(
         llm=manager_llm.build_model,
-        role="Chef",
-        goal="Du kan svara på allmänna frågor från användaren och kan kalla på andra för hjälp om det behövs.",
-        backstory="Du är artig och hjälpsam. Du har alltid varit en ledstjärna för artighet.",
+        role="Manager",
+        goal="You can answer general questions from the User and may call others for help if needed.",
+        backstory="You are polite and helpful. You've always been a beacon of politeness.",
     )
     task = HierarchicalTaskComponent()
     task.set(
         task_description=response_prompt.build_prompt,
-        expected_output="Kortfattat svar som besvarar användarens fråga.",
+        expected_output="Succinct response that answers the User's query.",
     )
     crew_component = HierarchicalCrewComponent()
     crew_component.set(

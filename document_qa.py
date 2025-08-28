@@ -7,7 +7,7 @@ from axiestudio.graph import Graph
 
 def document_qa_graph(template: str | None = None):
     if template is None:
-        template = """Svara på användarens frågor baserat på dokumentet nedan:
+        template = """Answer user's questions based on the document below:
 
 ---
 
@@ -15,10 +15,10 @@ def document_qa_graph(template: str | None = None):
 
 ---
 
-Fråga:
+Question:
 {Question}
 
-Svar:
+Answer:
 """
     file_component = FileComponent()
 

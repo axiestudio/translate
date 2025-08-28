@@ -14,68 +14,68 @@ def sequential_tasks_agent_graph():
     text_input = TextInputComponent(_display_name="Topic")
     text_input.set(input_value="Agile")
 
-    # Dokumentprompt för forskare
+    # Document Prompt for Researcher
     document_prompt_component = PromptComponent()
     document_prompt_component.set(
-        template="""Ämne: {topic}
+        template="""Topic: {topic}
 
-Bygg ett dokument om detta ämne.""",
+Build a document about this topic.""",
         topic=text_input.text_response,
     )
 
-    # Forskaruppgiftsagent
+    # Researcher Task Agent
     researcher_task_agent = SequentialTaskAgentComponent()
     researcher_task_agent.set(
-        role="Forskare",
-        goal="Sök på Google för att hitta information för att slutföra uppgiften.",
-        backstory="Forskning har alltid varit din grej. Du kan snabbt hitta saker på webben på grund av dina färdigheter.",
+        role="Researcher",
+        goal="Search Google to find information to complete the task.",
+        backstory="Research has always been your thing. You can quickly find things on the web because of your skills.",
         tools=[search_api_tool.build_tool],
         llm=llm.build_model,
         task_description=document_prompt_component.build_prompt,
-        expected_output="Punktlistor och små fraser om forskningsämnet.",
+        expected_output="Bullet points and small phrases about the research topic.",
     )
 
-    # Revisionsprompt för redaktör
+    # Revision Prompt for Editor
     revision_prompt_component = PromptComponent()
     revision_prompt_component.set(
-        template="""Ämne: {topic}
+        template="""Topic: {topic}
 
-Revidera detta dokument.""",
+Revise this document.""",
         topic=text_input.text_response,
     )
 
-    # Redaktörsuppgiftsagent
+    # Editor Task Agent
     editor_task_agent = SequentialTaskAgentComponent()
     editor_task_agent.set(
-        role="Redaktör",
-        goal="Du bör redigera informationen som tillhandahålls av forskaren för att göra den mer smaklig och för att inte innehålla "
-        "vilseledande information.",
-        backstory="Du är redaktör för den mest ansedda tidskriften i världen.",
+        role="Editor",
+        goal="You should edit the information provided by the Researcher to make it more palatable and to not contain "
+        "misleading information.",
+        backstory="You are the editor of the most reputable journal in the world.",
         llm=llm.build_model,
         task_description=revision_prompt_component.build_prompt,
-        expected_output="Små stycken och punktlistor med det korrigerade innehållet.",
+        expected_output="Small paragraphs and bullet points with the corrected content.",
         previous_task=researcher_task_agent.build_agent_and_task,
     )
 
-    # Bloggprompt för komiker
+    # Blog Prompt for Comedian
     blog_prompt_component = PromptComponent()
     blog_prompt_component.set(
-        template="""Ämne: {topic}
+        template="""Topic: {topic}
 
-Bygg ett roligt blogginlägg om detta ämne.""",
+Build a fun blog post about this topic.""",
         topic=text_input.text_response,
     )
 
-    # Komikeruppgiftsagent
+    # Comedian Task Agent
     comedian_task_agent = SequentialTaskAgentComponent()
     comedian_task_agent.set(
-        role="Komiker",
-        goal="Du skriver komiskt innehåll baserat på informationen som tillhandahålls av redaktören.",
-        backstory="Din formella yrkestittel är Chefskomiker. "
-        "Du skriver skämt, gör ståuppkomedi och skriver roliga artiklar.",
+        role="Comedian",
+        goal="You write comedic content based on the information provided by the editor.",
+        backstory="Your formal occupation is Comedian-in-Chief. "
+        "You write jokes, do standup comedy, and write funny articles.",
         llm=llm.build_model,
         task_description=blog_prompt_component.build_prompt,
-        expected_output="En liten blogg om ämnet.",
+        expected_output="A small blog about the topic.",
         previous_task=editor_task_agent.build_agent_and_task,
     )
 
@@ -84,14 +84,14 @@ Bygg ett roligt blogginlägg om detta ämne.""",
         tasks=comedian_task_agent.build_agent_and_task,
     )
 
-    # Ställ in utdatakomponenten
+    # Set up the output component
     chat_output = ChatOutput()
     chat_output.set(input_value=crew_component.build_output)
 
-    # Skapa grafen
+    # Create the graph
     return Graph(
         start=text_input,
         end=chat_output,
-        flow_name="Sekventiell Uppgiftsagent",
-        description="Denna agent kör uppgifter i en fördefinierad sekvens.",
+        flow_name="Sequential Tasks Agent",
+        description="This Agent runs tasks in a predefined sequence.",
     )
