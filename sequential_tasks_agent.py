@@ -11,71 +11,71 @@ def sequential_tasks_agent_graph():
     llm = OpenAIModelComponent()
     search_api_tool = SearchAPIComponent()
 
-    text_input = TextInputComponent(_display_name="Topic")
+    text_input = TextInputComponent(_display_name="Ämne")
     text_input.set(input_value="Agile")
 
-    # Document Prompt for Researcher
+    # Dokumentprompt för forskare
     document_prompt_component = PromptComponent()
     document_prompt_component.set(
-        template="""Topic: {topic}
+        template="""Ämne: {topic}
 
-Build a document about this topic.""",
+Bygg ett dokument om detta ämne.""",
         topic=text_input.text_response,
     )
 
-    # Researcher Task Agent
+    # Forskaruppgiftsagent
     researcher_task_agent = SequentialTaskAgentComponent()
     researcher_task_agent.set(
-        role="Researcher",
-        goal="Search Google to find information to complete the task.",
-        backstory="Research has always been your thing. You can quickly find things on the web because of your skills.",
+        role="Forskare",
+        goal="Sök på Google för att hitta information för att slutföra uppgiften.",
+        backstory="Forskning har alltid varit din grej. Du kan snabbt hitta saker på webben på grund av dina färdigheter.",
         tools=[search_api_tool.build_tool],
         llm=llm.build_model,
         task_description=document_prompt_component.build_prompt,
-        expected_output="Bullet points and small phrases about the research topic.",
+        expected_output="Punktlistor och små fraser om forskningsämnet.",
     )
 
-    # Revision Prompt for Editor
+    # Revisionsprompt för redaktör
     revision_prompt_component = PromptComponent()
     revision_prompt_component.set(
-        template="""Topic: {topic}
+        template="""Ämne: {topic}
 
-Revise this document.""",
+Revidera detta dokument.""",
         topic=text_input.text_response,
     )
 
-    # Editor Task Agent
+    # Redaktörsuppgiftsagent
     editor_task_agent = SequentialTaskAgentComponent()
     editor_task_agent.set(
-        role="Editor",
-        goal="You should edit the information provided by the Researcher to make it more palatable and to not contain "
-        "misleading information.",
-        backstory="You are the editor of the most reputable journal in the world.",
+        role="Redaktör",
+        goal="Du bör redigera informationen som tillhandahålls av forskaren för att göra den mer smaklig och för att inte innehålla "
+        "vilseledande information.",
+        backstory="Du är redaktör för den mest ansedda tidskriften i världen.",
         llm=llm.build_model,
         task_description=revision_prompt_component.build_prompt,
-        expected_output="Small paragraphs and bullet points with the corrected content.",
+        expected_output="Små stycken och punktlistor med det korrigerade innehållet.",
         previous_task=researcher_task_agent.build_agent_and_task,
     )
 
-    # Blog Prompt for Comedian
+    # Bloggprompt för komiker
     blog_prompt_component = PromptComponent()
     blog_prompt_component.set(
-        template="""Topic: {topic}
+        template="""Ämne: {topic}
 
-Build a fun blog post about this topic.""",
+Bygg ett roligt blogginlägg om detta ämne.""",
         topic=text_input.text_response,
     )
 
-    # Comedian Task Agent
+    # Komikeruppgiftsagent
     comedian_task_agent = SequentialTaskAgentComponent()
     comedian_task_agent.set(
-        role="Comedian",
-        goal="You write comedic content based on the information provided by the editor.",
-        backstory="Your formal occupation is Comedian-in-Chief. "
-        "You write jokes, do standup comedy, and write funny articles.",
+        role="Komiker",
+        goal="Du skriver komiskt innehåll baserat på informationen som tillhandahålls av redaktören.",
+        backstory="Din formella yrke är Chefkomiker. "
+        "Du skriver skämt, gör ståuppkomedi och skriver roliga artiklar.",
         llm=llm.build_model,
         task_description=blog_prompt_component.build_prompt,
-        expected_output="A small blog about the topic.",
+        expected_output="En liten blogg om ämnet.",
         previous_task=editor_task_agent.build_agent_and_task,
     )
 
@@ -84,14 +84,14 @@ Build a fun blog post about this topic.""",
         tasks=comedian_task_agent.build_agent_and_task,
     )
 
-    # Set up the output component
+    # Ställ in utdatakomponenten
     chat_output = ChatOutput()
     chat_output.set(input_value=crew_component.build_output)
 
-    # Create the graph
+    # Skapa grafen
     return Graph(
         start=text_input,
         end=chat_output,
-        flow_name="Sequential Tasks Agent",
-        description="This Agent runs tasks in a predefined sequence.",
+        flow_name="Sekventiell uppgiftsagent",
+        description="Denna agent kör uppgifter i en fördefinierad sekvens.",
     )
