@@ -9,7 +9,7 @@ from axiestudio.graph import Graph
 
 def blog_writer_graph(template: str | None = None):
     if template is None:
-        template = dedent("""Reference 1:
+        template = dedent("""Referens 1:
 
 {references}
 
@@ -17,7 +17,7 @@ def blog_writer_graph(template: str | None = None):
 
 {instructions}
 
-Blog:
+Blogg:
 """)
     url_component = URLComponent()
     url_component.set(urls=["https://axiestudio.org/", "https://docs.axiestudio.org/"])
@@ -26,8 +26,8 @@ Blog:
 
     text_input = TextInputComponent(_display_name="Instructions")
     text_input.set(
-        input_value="Use the references above for style to write a new blog/tutorial about Axie Studio and AI. "
-        "Suggest non-covered topics."
+        input_value="Använd referenserna ovan för stil för att skriva en ny blogg/handledning om Axie Studio och AI. "
+        "Föreslå ämnen som inte täcks."
     )
 
     prompt_component = PromptComponent()
